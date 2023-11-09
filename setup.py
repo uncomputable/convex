@@ -3,10 +3,10 @@ from setuptools import setup
 setup(
     name="convex",
     version="1.0",
-    py_modules=["main"],
+    scripts=["convex.py"],
     entry_points={
         "console_scripts": [
-            "convex=main:main",
+            "convex=convex:main",
         ],
     },
 )
