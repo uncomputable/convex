@@ -3,7 +3,7 @@
 }:
 python3.pkgs.buildPythonApplication {
   pname = "convex";
-  version = "0.1";
+  version = "1.0";
 
   src = ./.;
 
