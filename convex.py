@@ -1,6 +1,7 @@
 import argparse
 import re
 import sys
+import unittest
 from typing import List, Optional
 
 
@@ -169,3 +170,77 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+class TestConvex(unittest.TestCase):
+    LIST = [32, 149, 119, 189, 166, 191, 75, 88, 4, 189, 70, 248, 98, 21, 128, 221, 109, 78, 139, 250, 45, 25, 14, 28, 80, 233, 50, 73, 43, 172, 160, 125]
+    STRING = "209577bda6bf4b5804bd46f8621580dd6d4e8bfa2d190e1c50e932492baca07d"
+    C = "0x209577bdu, 0xa6bf4b58u, 0x04bd46f8u, 0x621580ddu, 0x6d4e8bfau, 0x2d190e1cu, 0x50e93249u, 0x2baca07du"
+    COQ = "32%Z; 149%Z; 119%Z; 189%Z; 166%Z; 191%Z; 75%Z; 88%Z; 4%Z; 189%Z; 70%Z; 248%Z; 98%Z; 21%Z; 128%Z; 221%Z; 109%Z; 78%Z; 139%Z; 250%Z; 45%Z; 25%Z; 14%Z; 28%Z; 80%Z; 233%Z; 50%Z; 73%Z; 43%Z; 172%Z; 160%Z; 125%Z"
+    RUST = "0x20, 0x95, 0x77, 0xbd, 0xa6, 0xbf, 0x4b, 0x58, 0x04, 0xbd, 0x46, 0xf8, 0x62, 0x15, 0x80, 0xdd, 0x6d, 0x4e, 0x8b, 0xfa, 0x2d, 0x19, 0x0e, 0x1c, 0x50, 0xe9, 0x32, 0x49, 0x2b, 0xac, 0xa0, 0x7d"
+    JSON = "32, 149, 119, 189, 166, 191, 75, 88, 4, 189, 70, 248, 98, 21, 128, 221, 109, 78, 139, 250, 45, 25, 14, 28, 80, 233, 50, 73, 43, 172, 160, 125"
+
+    def test_is_string(self):
+        self.assertTrue(is_string(self.STRING))
+        self.assertFalse(is_string(self.C))
+        self.assertFalse(is_string(self.COQ))
+        self.assertFalse(is_string(self.RUST))
+        self.assertFalse(is_string(self.JSON))
+
+    def test_is_c(self):
+        self.assertFalse(is_c(self.STRING))
+        self.assertTrue(is_c(self.C))
+        self.assertFalse(is_c(self.COQ))
+        self.assertFalse(is_c(self.RUST))
+        self.assertFalse(is_c(self.JSON))
+
+    def test_is_coq(self):
+        self.assertFalse(is_coq(self.STRING))
+        self.assertFalse(is_coq(self.C))
+        self.assertTrue(is_coq(self.COQ))
+        self.assertFalse(is_coq(self.RUST))
+        self.assertFalse(is_coq(self.JSON))
+
+    def test_is_rust(self):
+        self.assertFalse(is_rust(self.STRING))
+        self.assertFalse(is_rust(self.C))
+        self.assertFalse(is_rust(self.COQ))
+        self.assertTrue(is_rust(self.RUST))
+        self.assertFalse(is_rust(self.JSON))
+
+    def test_is_json(self):
+        self.assertFalse(is_json(self.STRING))
+        self.assertFalse(is_json(self.C))
+        self.assertFalse(is_json(self.COQ))
+        self.assertFalse(is_json(self.RUST))
+        self.assertTrue(is_json(self.JSON))
+
+    def test_parse_string(self):
+        self.assertEqual(self.LIST, parse_string(self.STRING))
+
+    def test_parse_c(self):
+        self.assertEqual(self.LIST, parse_c(self.C))
+
+    def test_parse_coq(self):
+        self.assertEqual(self.LIST, parse_coq(self.COQ))
+
+    def test_parse_rust(self):
+        self.assertEqual(self.LIST, parse_rust(self.RUST))
+
+    def test_parse_json(self):
+        self.assertEqual(self.LIST, parse_json(self.JSON))
+
+    def test_format_string(self):
+        self.assertEqual(self.STRING, format_string(self.LIST))
+
+    def test_format_c(self):
+        self.assertEqual(self.C, format_c(self.LIST))
+
+    def test_format_coq(self):
+        self.assertEqual(self.COQ, format_coq(self.LIST))
+
+    def test_format_rust(self):
+        self.assertEqual(self.RUST, format_rust(self.LIST))
+
+    def test_format_json(self):
+        self.assertEqual(self.JSON, format_json(self.LIST))
