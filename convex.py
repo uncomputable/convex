@@ -1,5 +1,27 @@
 import argparse
-from typing import List
+import re
+import sys
+from typing import List, Optional
+
+
+def is_string(string: str) -> bool:
+    return bool(re.match(r"^(\s*[0-9a-f]{2}\s*)*$", string))
+
+
+def is_c(string: str) -> bool:
+    return bool(re.match(r"^(\s*0x[0-9a-f]{8}u\s*)(,\s*0x[0-9a-f]{8}u\s*)*$", string))
+
+
+def is_coq(string: str) -> bool:
+    return bool(re.match(r"^(\s*[0-9]{1,3}%Z\s*)(;\s*[0-9]{1,3}%Z\s*)*$", string))
+
+
+def is_rust(string: str) -> bool:
+    return bool(re.match(r"^(\s*0x[0-9a-f]{2}\s*)(,\s*0x[0-9a-f]{2}\s*)*$", string))
+
+
+def is_json(string: str) -> bool:
+    return bool(re.match(r"^(\s*[0-9]{1,3}\s*)(,\s*[0-9]{1,3}\s*)*$", string))
 
 
 def parse_string(string: str) -> List[int]:
@@ -59,6 +81,21 @@ def parse_json(json: str) -> List[int]:
     return [int(s) for s in hex_strings if s]
 
 
+def parse_auto(string: str) -> Optional[List[int]]:
+    if is_c(string):
+        return parse_c(string)
+    elif is_coq(string):
+        return parse_coq(string)
+    elif is_rust(string):
+        return parse_rust(string)
+    elif is_json(string):
+        return parse_json(string)
+    elif is_string(string):
+        return parse_string(string)
+    else:
+        return None
+
+
 def format_string(lst: List[int]) -> str:
     return "".join([f"{x:02x}" for x in lst])
 
@@ -113,7 +150,10 @@ def main():
     elif args.from_c:
         lst = parse_c(args.input)
     else:
-        lst = parse_string(args.input)
+        lst = parse_auto(args.input)
+        if lst is None:
+            sys.stderr.write("Error: Failed to parse input string\n")
+            sys.exit(1)
 
     if args.reverse:
         lst = list(reversed(lst))
