@@ -161,7 +161,7 @@ def main():
     # Format output
     if args.to_rust:
         s = format_rust(lst)
-    elif args.to_rust:
+    elif args.to_coq:
         s = format_coq(lst)
     elif args.to_json:
         s = format_json(lst)
