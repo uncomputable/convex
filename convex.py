@@ -9,24 +9,42 @@ import unittest
 from typing import List, Optional
 
 
+def as_list(element: str, delimiter: str) -> str:
+    return r"(\s*" + element + r"\s*)(" + delimiter + r"\s*" + element + r"\s*)*"
+
+
+def ignore_brackets(body: str) -> str:
+    return r"[\s(\[{]*" + body + r"\s*[\s)\]}]*"
+
+
 def is_string(string: str) -> bool:
-    return bool(re.match(r"^(\s*[0-9a-f]{2}\s*)*$", string))
+    body = r"(\s*[0-9a-f]{2}\s*)*"
+    pattern = r"^" + ignore_brackets(body) + r"$"
+    return bool(re.match(pattern, string))
 
 
 def is_c(string: str) -> bool:
-    return bool(re.match(r"^(\s*0x[0-9a-f]{8}u\s*)(,\s*0x[0-9a-f]{8}u\s*)*$", string))
+    body = as_list(r"0x[0-9a-f]{8}u", r",")
+    pattern = r"^" + ignore_brackets(body) + r"$"
+    return bool(re.match(pattern, string))
 
 
 def is_coq(string: str) -> bool:
-    return bool(re.match(r"^(\s*[0-9]{1,3}%Z\s*)(;\s*[0-9]{1,3}%Z\s*)*$", string))
+    body = as_list(r"[0-9]{1,3}%Z", r";")
+    pattern = r"^" + ignore_brackets(body) + r"$"
+    return bool(re.match(pattern, string))
 
 
 def is_rust(string: str) -> bool:
-    return bool(re.match(r"^(\s*0x[0-9a-f]{2}\s*)(,\s*0x[0-9a-f]{2}\s*)*$", string))
+    body = as_list(r"0x[0-9a-f]{2}", r",")
+    pattern = r"^" + ignore_brackets(body) + r"$"
+    return bool(re.match(pattern, string))
 
 
 def is_json(string: str) -> bool:
-    return bool(re.match(r"^(\s*[0-9]{1,3}\s*)(,\s*[0-9]{1,3}\s*)*$", string))
+    body = as_list(r"[0-9]{1,3}", r",")
+    pattern = r"^" + ignore_brackets(body) + r"$"
+    return bool(re.match(pattern, string))
 
 
 def parse_string(string: str) -> Optional[List[int]]:
@@ -34,7 +52,13 @@ def parse_string(string: str) -> Optional[List[int]]:
         return None
     hex_string = string \
         .replace("\n", "") \
-        .replace(" ", "")
+        .replace(" ", "") \
+        .replace("(", "") \
+        .replace(")", "") \
+        .replace("[", "") \
+        .replace("]", "") \
+        .replace("{", "") \
+        .replace("}", "")
     hex_strings = [hex_string[i:i+2] for i in range(0, len(hex_string), 2)]
     return [int(s, 16) for s in hex_strings if s]
 
@@ -45,6 +69,12 @@ def parse_c(string: str) -> Optional[List[int]]:
     four_hex_strings = string \
         .replace("\n", "") \
         .replace(" ", "") \
+        .replace("(", "") \
+        .replace(")", "") \
+        .replace("[", "") \
+        .replace("]", "") \
+        .replace("{", "") \
+        .replace("}", "") \
         .split(",")
     hex_strings = [s[2:-1][i:i+2] for s in four_hex_strings for i in range(0, 8, 2)]
     return [int(s, 16) for s in hex_strings if s]
@@ -56,6 +86,12 @@ def parse_coq(string: str) -> Optional[List[int]]:
     hex_strings = string \
         .replace("\n", "") \
         .replace(" ", "") \
+        .replace("(", "") \
+        .replace(")", "") \
+        .replace("[", "") \
+        .replace("]", "") \
+        .replace("{", "") \
+        .replace("}", "") \
         .replace("%Z", "") \
         .split(";")
     return [int(s) for s in hex_strings if s]
@@ -67,6 +103,12 @@ def parse_rust(string: str) -> Optional[List[int]]:
     hex_strings = string \
         .replace("\n", "") \
         .replace(" ", "") \
+        .replace("(", "") \
+        .replace(")", "") \
+        .replace("[", "") \
+        .replace("]", "") \
+        .replace("{", "") \
+        .replace("}", "") \
         .split(",")
     return [int(s[2:], 16) for s in hex_strings if s]
 
@@ -77,6 +119,12 @@ def parse_json(string: str) -> Optional[List[int]]:
     hex_strings = string \
         .replace("\n", "") \
         .replace(" ", "") \
+        .replace("(", "") \
+        .replace(")", "") \
+        .replace("[", "") \
+        .replace("]", "") \
+        .replace("{", "") \
+        .replace("}", "") \
         .split(",")
     return [int(s) for s in hex_strings if s]
 
