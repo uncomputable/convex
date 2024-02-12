@@ -1,0 +1,56 @@
+name: Test
+on:
+  push:
+    branches:
+      - master
+jobs:
+  check-typing:
+    name: Check typing
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Install nix
+      uses: cachix/install-nix-action@v24
+      with:
+        github_access_token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Check typing
+      run: |
+        nix-shell --command "mypy convex.py"
+
+  run-linter:
+    name: Run linter
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Install nix
+      uses: cachix/install-nix-action@v24
+      with:
+        github_access_token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Run linter
+      run: |
+        nix-shell --command "pylint convex.py"
+
+  run-unit-tests:
+    name: Run unit tests
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Install nix
+      uses: cachix/install-nix-action@v24
+      with:
+        github_access_token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Run unit tests
+      run: |
+        nix-shell --command "python -m unittest convex.TestConvex"
