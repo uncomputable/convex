@@ -18,7 +18,7 @@ def ignore_brackets(body: str) -> str:
 
 
 def is_string(string: str) -> bool:
-    body = r"(\s*[0-9a-f]{2}\s*)*"
+    body = r"([0-9a-f]{2})*"
     pattern = r"^" + ignore_brackets(body) + r"$"
     return bool(re.match(pattern, string))
 
@@ -48,9 +48,8 @@ def is_json(string: str) -> bool:
 
 
 def parse_string(string: str) -> Optional[List[int]]:
-    if not is_string(string):
-        return None
     hex_string = string \
+        .removeprefix("0x") \
         .replace("\n", "") \
         .replace(" ", "") \
         .replace("(", "") \
@@ -59,6 +58,8 @@ def parse_string(string: str) -> Optional[List[int]]:
         .replace("]", "") \
         .replace("{", "") \
         .replace("}", "")
+    if not is_string(hex_string):
+        return None
     hex_strings = [hex_string[i:i+2] for i in range(0, len(hex_string), 2)]
     return [int(s, 16) for s in hex_strings if s]
 
