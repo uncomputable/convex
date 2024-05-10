@@ -16,7 +16,7 @@ def clean(string: str) -> str:
 
 
 def as_list(element: str, delimiter: str) -> str:
-    return r"(" + element + r")(" + delimiter + element + r")*"
+    return rf"({element}({delimiter}{element})*)?"
 
 O_TO_255 = r"\b25[0-5]\b|\b2[0-4][0-9]\b|\b1[0-9]{2}\b|\b[1-9][0-9]\b|\b[0-9]\b"
 STRING_HEX = re.compile(r"(0x)?([0-9a-f]{2})*")
