@@ -231,3 +231,9 @@ class TestConvex(unittest.TestCase):
             assert pattern.fullmatch(str(num))
         for num in range(256, 512):
             assert not pattern.fullmatch(str(num))
+
+    def test_fuzz(self):
+        """
+        Replay failing fuzz test vectors here.
+        """
+        format_rust([0, 0])
