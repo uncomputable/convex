@@ -33,6 +33,8 @@ $ convex --reverse "209577bda6bf4b5804bd46f8621580dd6d4e8bfa2d190e1c50e932492bac
 7da0ac2b4932e9501c0e192dfa8b4e6ddd801562f846bd04584bbfa6bd779520
 ```
 
+Fuzzed for correctness.
+
 ## Supported representations
 
 ### String
