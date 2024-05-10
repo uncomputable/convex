@@ -20,3 +20,20 @@ jobs:
     - name: Check code
       run: |
         nix-shell --command "just check"
+
+  check-build:
+    name: Check build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Install nix
+      uses: cachix/install-nix-action@v24
+      with:
+        github_access_token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Check build
+      run: |
+        nix-build
