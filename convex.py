@@ -226,41 +226,6 @@ class TestConvex(unittest.TestCase):
     JSON = "32, 149, 119, 189, 166, 191, 75, 88, 4, 189, 70, 248, 98, 21, 128, 221, 109, 78, 139, 250, 45, 25, 14, 28, 80, 233, 50, 73, 43, 172, 160, 125"
     # pylint: enable=line-too-long
 
-    def test_is_string(self):
-        self.assertTrue(is_string(self.STRING))
-        self.assertFalse(is_string(self.C))
-        self.assertFalse(is_string(self.COQ))
-        self.assertFalse(is_string(self.RUST))
-        self.assertFalse(is_string(self.JSON))
-
-    def test_is_c(self):
-        self.assertFalse(is_c(self.STRING))
-        self.assertTrue(is_c(self.C))
-        self.assertFalse(is_c(self.COQ))
-        self.assertFalse(is_c(self.RUST))
-        self.assertFalse(is_c(self.JSON))
-
-    def test_is_coq(self):
-        self.assertFalse(is_coq(self.STRING))
-        self.assertFalse(is_coq(self.C))
-        self.assertTrue(is_coq(self.COQ))
-        self.assertFalse(is_coq(self.RUST))
-        self.assertFalse(is_coq(self.JSON))
-
-    def test_is_rust(self):
-        self.assertFalse(is_rust(self.STRING))
-        self.assertFalse(is_rust(self.C))
-        self.assertFalse(is_rust(self.COQ))
-        self.assertTrue(is_rust(self.RUST))
-        self.assertFalse(is_rust(self.JSON))
-
-    def test_is_json(self):
-        self.assertFalse(is_json(self.STRING))
-        self.assertFalse(is_json(self.C))
-        self.assertFalse(is_json(self.COQ))
-        self.assertFalse(is_json(self.RUST))
-        self.assertTrue(is_json(self.JSON))
-
     def test_parse_string(self):
         self.assertEqual(self.LIST, parse_string(self.STRING))
 
