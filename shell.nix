@@ -14,5 +14,6 @@ in
     buildInputs = [
       python
       pkgs.mypy
+      pkgs.just
     ];
   }
