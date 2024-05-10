@@ -1,0 +1,22 @@
+name: Fuzz
+on:
+  push:
+    branches:
+      - master
+jobs:
+  fuzz-code:
+    name: Fuzz code
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Install nix
+      uses: cachix/install-nix-action@v24
+      with:
+        github_access_token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Fuzz code
+      run: |
+        nix-shell --command "just fuzz"
