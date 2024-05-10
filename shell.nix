@@ -7,6 +7,7 @@
 let
   python = pkgs.python3.withPackages (p: with p; [
     pylint
+    hypothesis
   ]);
 in
   pkgs.mkShell {
