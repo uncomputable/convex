@@ -13,38 +13,29 @@ def as_list(element: str, delimiter: str) -> str:
     return r"(\s*" + element + r"\s*)(" + delimiter + r"\s*" + element + r"\s*)*"
 
 
-def ignore_brackets(body: str) -> str:
-    return r"[\s(\[{]*" + body + r"\s*[\s)\]}]*"
-
-
 def is_string(string: str) -> bool:
-    body = r"([0-9a-f]{2})*"
-    pattern = r"^" + ignore_brackets(body) + r"$"
-    return bool(re.match(pattern, string))
+    pattern = r"(0x)?([0-9a-f]{2})*"
+    return bool(re.fullmatch(pattern, string))
 
 
 def is_c(string: str) -> bool:
-    body = as_list(r"0x[0-9a-f]{8}u", r",")
-    pattern = r"^" + ignore_brackets(body) + r"$"
-    return bool(re.match(pattern, string))
+    pattern = as_list(r"0x[0-9a-f]{8}u", r",")
+    return bool(re.fullmatch(pattern, string))
 
 
 def is_coq(string: str) -> bool:
-    body = as_list(r"[0-9]{1,3}%Z", r";")
-    pattern = r"^" + ignore_brackets(body) + r"$"
-    return bool(re.match(pattern, string))
+    pattern = as_list(r"[0-9]{1,3}%Z", r";")
+    return bool(re.fullmatch(pattern, string))
 
 
 def is_rust(string: str) -> bool:
-    body = as_list(r"0x[0-9a-f]{2}", r",")
-    pattern = r"^" + ignore_brackets(body) + r"$"
-    return bool(re.match(pattern, string))
+    pattern = as_list(r"0x[0-9a-f]{2}", r",")
+    return bool(re.fullmatch(pattern, string))
 
 
 def is_json(string: str) -> bool:
-    body = as_list(r"[0-9]{1,3}", r",")
-    pattern = r"^" + ignore_brackets(body) + r"$"
-    return bool(re.match(pattern, string))
+    pattern = as_list(r"[0-9]{1,3}", r",")
+    return bool(re.fullmatch(pattern, string))
 
 
 def parse_string(string: str) -> Optional[List[int]]:
@@ -65,9 +56,7 @@ def parse_string(string: str) -> Optional[List[int]]:
 
 
 def parse_c(string: str) -> Optional[List[int]]:
-    if not is_c(string):
-        return None
-    four_hex_strings = string \
+    string = string \
         .replace("\n", "") \
         .replace(" ", "") \
         .replace("(", "") \
@@ -75,16 +64,16 @@ def parse_c(string: str) -> Optional[List[int]]:
         .replace("[", "") \
         .replace("]", "") \
         .replace("{", "") \
-        .replace("}", "") \
-        .split(",")
+        .replace("}", "")
+    if not is_c(string):
+        return None
+    four_hex_strings = string.split(",")
     hex_strings = [s[2:-1][i:i+2] for s in four_hex_strings for i in range(0, 8, 2)]
     return [int(s, 16) for s in hex_strings if s]
 
 
 def parse_coq(string: str) -> Optional[List[int]]:
-    if not is_coq(string):
-        return None
-    hex_strings = string \
+    string = string \
         .replace("\n", "") \
         .replace(" ", "") \
         .replace("(", "") \
@@ -93,15 +82,15 @@ def parse_coq(string: str) -> Optional[List[int]]:
         .replace("]", "") \
         .replace("{", "") \
         .replace("}", "") \
-        .replace("%Z", "") \
-        .split(";")
+        .replace("%Z", "")
+    if not is_coq(string):
+        return None
+    hex_strings = string.split(";")
     return [int(s) for s in hex_strings if s]
 
 
 def parse_rust(string: str) -> Optional[List[int]]:
-    if not is_rust(string):
-        return None
-    hex_strings = string \
+    string = string \
         .replace("\n", "") \
         .replace(" ", "") \
         .replace("(", "") \
@@ -109,15 +98,15 @@ def parse_rust(string: str) -> Optional[List[int]]:
         .replace("[", "") \
         .replace("]", "") \
         .replace("{", "") \
-        .replace("}", "") \
-        .split(",")
+        .replace("}", "")
+    if not is_rust(string):
+        return None
+    hex_strings = string.split(",")
     return [int(s[2:], 16) for s in hex_strings if s]
 
 
 def parse_json(string: str) -> Optional[List[int]]:
-    if not is_json(string):
-        return None
-    hex_strings = string \
+    string = string \
         .replace("\n", "") \
         .replace(" ", "") \
         .replace("(", "") \
@@ -125,8 +114,10 @@ def parse_json(string: str) -> Optional[List[int]]:
         .replace("[", "") \
         .replace("]", "") \
         .replace("{", "") \
-        .replace("}", "") \
-        .split(",")
+        .replace("}", "")
+    if not is_json(string):
+        return None
+    hex_strings = string.split(",")
     return [int(s) for s in hex_strings if s]
 
 
