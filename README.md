@@ -92,6 +92,10 @@ Install the built derivation in your nix profile.
 nix profile install ./result
 ```
 
-## Install the script without nix
+## Install the script using pip
 
-IDK, use setuptools or something 😝
+Install the script using pip.
+
+```bash
+pip install .
+```
