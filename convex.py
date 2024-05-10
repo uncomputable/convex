@@ -18,30 +18,31 @@ def clean(string: str) -> str:
 def as_list(element: str, delimiter: str) -> str:
     return r"(" + element + r")(" + delimiter + element + r")*"
 
+STRING_HEX = re.compile(r"(0x)?([0-9a-f]{2})*")
+C_HEX = re.compile(as_list(r"0x[0-9a-f]{8}u", r","))
+COQ_HEX = re.compile(as_list(r"[0-9]{1,3}%Z", r";"))
+RUST_HEX = re.compile(as_list(r"0x[0-9a-f]{2}", r","))
+JSON_HEX = re.compile(as_list(r"[0-9]{1,3}", r","))
+
 
 def is_string(string: str) -> bool:
-    pattern = r"(0x)?([0-9a-f]{2})*"
-    return bool(re.fullmatch(pattern, string))
+    return bool(STRING_HEX.fullmatch(string))
 
 
 def is_c(string: str) -> bool:
-    pattern = as_list(r"0x[0-9a-f]{8}u", r",")
-    return bool(re.fullmatch(pattern, string))
+    return bool(C_HEX.fullmatch(string))
 
 
 def is_coq(string: str) -> bool:
-    pattern = as_list(r"[0-9]{1,3}%Z", r";")
-    return bool(re.fullmatch(pattern, string))
+    return bool(COQ_HEX.fullmatch(string))
 
 
 def is_rust(string: str) -> bool:
-    pattern = as_list(r"0x[0-9a-f]{2}", r",")
-    return bool(re.fullmatch(pattern, string))
+    return bool(RUST_HEX.fullmatch(string))
 
 
 def is_json(string: str) -> bool:
-    pattern = as_list(r"[0-9]{1,3}", r",")
-    return bool(re.fullmatch(pattern, string))
+    return bool(JSON_HEX.fullmatch(string))
 
 
 def parse_string(string: str) -> Optional[List[int]]:
