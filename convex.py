@@ -18,11 +18,12 @@ def clean(string: str) -> str:
 def as_list(element: str, delimiter: str) -> str:
     return r"(" + element + r")(" + delimiter + element + r")*"
 
+O_TO_255 = r"\b25[0-5]\b|\b2[0-4][0-9]\b|\b1[0-9]{2}\b|\b[1-9][0-9]\b|\b[0-9]\b"
 STRING_HEX = re.compile(r"(0x)?([0-9a-f]{2})*")
 C_HEX = re.compile(as_list(r"0x[0-9a-f]{8}u", r","))
-COQ_HEX = re.compile(as_list(r"[0-9]{1,3}%Z", r";"))
+COQ_HEX = re.compile(as_list(rf"({O_TO_255})%Z", r";"))
 RUST_HEX = re.compile(as_list(r"0x[0-9a-f]{2}", r","))
-JSON_HEX = re.compile(as_list(r"[0-9]{1,3}", r","))
+JSON_HEX = re.compile(as_list(rf"({O_TO_255})", r","))
 
 
 def is_string(string: str) -> bool:
@@ -223,3 +224,10 @@ class TestConvex(unittest.TestCase):
 
     def test_format_json(self):
         self.assertEqual(self.JSON, format_json(self.LIST))
+
+    def test_match_0_to_255(self):
+        pattern = re.compile(O_TO_255)
+        for num in range(256):
+            assert pattern.fullmatch(str(num))
+        for num in range(256, 512):
+            assert not pattern.fullmatch(str(num))
